@@ -517,7 +517,11 @@ hr {
   line-height: 42px;
   margin-bottom: 0; }
 
-.restart-button {
+.game-actions {
+  float: right; }
+
+.restart-button,
+.auto-restart-button {
   display: inline-block;
   background: #8f7a66;
   border-radius: 3px;
@@ -526,9 +530,14 @@ hr {
   color: #f9f6f2;
   height: 40px;
   line-height: 42px;
-  display: block;
-  text-align: center;
-  float: right; }
+  text-align: center; }
+
+.auto-restart-button {
+  margin-right: 10px; }
+
+.auto-restart-enabled {
+  background: #f9f6f2;
+  color: #776e65; }
 
 .game-explanation {
   margin-top: 50px; }
@@ -563,12 +572,18 @@ hr {
     box-sizing: border-box;
     line-height: 1.65; }
 
-  .restart-button {
+  .game-actions {
     width: 42%;
+    display: block;
+    box-sizing: border-box; }
+
+  .restart-button,
+  .auto-restart-button {
+    width: 100%;
     padding: 0;
     display: block;
     box-sizing: border-box;
-    margin-top: 2px; }
+    margin-top: 4px; }
 
   .game-container {
     margin-top: 17px;

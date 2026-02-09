@@ -21,6 +21,7 @@ window.fakeStorage = {
 function LocalStorageManager() {
   this.bestScoreKey     = "bestScore";
   this.gameStateKey     = "gameState";
+  this.autoRestartKey   = "autoRestart";
 
   var supported = this.localStorageSupported();
   this.storage = supported ? window.localStorage : window.fakeStorage;
@@ -60,4 +61,13 @@ LocalStorageManager.prototype.setGameState = function (gameState) {
 
 LocalStorageManager.prototype.clearGameState = function () {
   this.storage.removeItem(this.gameStateKey);
+};
+
+LocalStorageManager.prototype.getAutoRestart = function () {
+  var setting = this.storage.getItem(this.autoRestartKey);
+  return setting ? JSON.parse(setting) : false;
+};
+
+LocalStorageManager.prototype.setAutoRestart = function (enabled) {
+  this.storage.setItem(this.autoRestartKey, JSON.stringify(!!enabled));
 };

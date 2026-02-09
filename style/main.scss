@@ -461,11 +461,24 @@ hr {
   margin-bottom: 0;
 }
 
-.restart-button {
-  @include button;
-  display: block;
-  text-align: center;
+.game-actions {
   float: right;
+}
+
+.restart-button,
+.auto-restart-button {
+  @include button;
+  display: inline-block;
+  text-align: center;
+}
+
+.auto-restart-button {
+  margin-right: 10px;
+}
+
+.auto-restart-enabled {
+  background: $bright-text-color;
+  color: $title-color;
 }
 
 .game-explanation {
@@ -518,12 +531,19 @@ hr {
     line-height: 1.65;
   }
 
-  .restart-button {
+  .game-actions {
     width: 42%;
+    display: block;
+    box-sizing: border-box;
+  }
+
+  .restart-button,
+  .auto-restart-button {
+    width: 100%;
     padding: 0;
     display: block;
     box-sizing: border-box;
-    margin-top: 2px;
+    margin-top: 4px;
   }
 
   // Render the game field at the right width

@@ -5,16 +5,19 @@ function GameManager(size, InputManager, Actuator, StorageManager) {
   this.actuator       = new Actuator;
 
   this.startTiles     = 2;
+  this.autoRestartTimeout = null;
 
   this.inputManager.on("move", this.move.bind(this));
   this.inputManager.on("restart", this.restart.bind(this));
   this.inputManager.on("keepPlaying", this.keepPlaying.bind(this));
+  this.inputManager.on("toggleAutoRestart", this.toggleAutoRestart.bind(this));
 
   this.setup();
 }
 
 // Restart the game
 GameManager.prototype.restart = function () {
+  this.clearAutoRestartTimeout();
   this.storageManager.clearGameState();
   this.actuator.continueGame(); // Clear the game won/lost message
   this.setup();
@@ -22,8 +25,15 @@ GameManager.prototype.restart = function () {
 
 // Keep playing after winning (allows going over 2048)
 GameManager.prototype.keepPlaying = function () {
+  this.clearAutoRestartTimeout();
   this.keepPlaying = true;
   this.actuator.continueGame(); // Clear the game won/lost message
+};
+
+GameManager.prototype.toggleAutoRestart = function () {
+  this.autoRestart = !this.autoRestart;
+  this.storageManager.setAutoRestart(this.autoRestart);
+  this.actuator.updateAutoRestart(this.autoRestart);
 };
 
 // Return true if the game is lost, or has won and the user hasn't kept playing
@@ -34,6 +44,8 @@ GameManager.prototype.isGameTerminated = function () {
 // Set up the game
 GameManager.prototype.setup = function () {
   var previousState = this.storageManager.getGameState();
+  this.autoRestart  = this.storageManager.getAutoRestart();
+  this.clearAutoRestartTimeout();
 
   // Reload the game from a previous game if present
   if (previousState) {
@@ -93,9 +105,32 @@ GameManager.prototype.actuate = function () {
     over:       this.over,
     won:        this.won,
     bestScore:  this.storageManager.getBestScore(),
-    terminated: this.isGameTerminated()
+    terminated: this.isGameTerminated(),
+    autoRestart: this.autoRestart
   });
 
+  if (this.autoRestart && this.isGameTerminated()) {
+    this.scheduleAutoRestart();
+  } else {
+    this.clearAutoRestartTimeout();
+  }
+};
+
+GameManager.prototype.scheduleAutoRestart = function () {
+  var self = this;
+
+  if (this.autoRestartTimeout) return;
+
+  this.autoRestartTimeout = setTimeout(function () {
+    self.restart();
+  }, 1500);
+};
+
+GameManager.prototype.clearAutoRestartTimeout = function () {
+  if (this.autoRestartTimeout) {
+    clearTimeout(this.autoRestartTimeout);
+    this.autoRestartTimeout = null;
+  }
 };
 
 // Represent the current game as an object
