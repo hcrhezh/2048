@@ -3,6 +3,7 @@ function HTMLActuator() {
   this.scoreContainer   = document.querySelector(".score-container");
   this.bestContainer    = document.querySelector(".best-container");
   this.messageContainer = document.querySelector(".game-message");
+  this.autoRestartButton = document.querySelector(".auto-restart-button");
 
   this.score = 0;
 }
@@ -23,6 +24,7 @@ HTMLActuator.prototype.actuate = function (grid, metadata) {
 
     self.updateScore(metadata.score);
     self.updateBestScore(metadata.bestScore);
+    self.updateAutoRestart(metadata.autoRestart);
 
     if (metadata.terminated) {
       if (metadata.over) {
@@ -122,6 +124,15 @@ HTMLActuator.prototype.updateScore = function (score) {
 
 HTMLActuator.prototype.updateBestScore = function (bestScore) {
   this.bestContainer.textContent = bestScore;
+};
+
+HTMLActuator.prototype.updateAutoRestart = function (autoRestart) {
+  if (!this.autoRestartButton) return;
+
+  var label = autoRestart ? "Auto Delete: On" : "Auto Delete: Off";
+
+  this.autoRestartButton.textContent = label;
+  this.autoRestartButton.classList.toggle("auto-restart-enabled", autoRestart);
 };
 
 HTMLActuator.prototype.message = function (won) {
